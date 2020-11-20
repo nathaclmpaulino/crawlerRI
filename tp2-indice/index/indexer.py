@@ -95,7 +95,7 @@ class HTMLIndexer:
                         perform_stemming=True)
     def __init__(self,index):
         self.index = index
-        #nltk.download('punkt')
+        nltk.download('punkt')
     def text_word_count(self,plain_text:str):
         
         words = word_tokenize(plain_text)
@@ -119,7 +119,7 @@ class HTMLIndexer:
         
         dict_word_count = self.text_word_count(plain_text)
         
-        # Passo 3: Indexar cada palavra
+        # Passo 3: Indexar cada palavra - termoccurrence
         for key, freq in dict_word_count.items():
             self.index.index(key, doc_id, freq)
 
