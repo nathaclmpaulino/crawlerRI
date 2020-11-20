@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.7b3b8bc7.chunk.css",
-    "main.js": "/static/js/main.187f3c48.chunk.js",
-    "main.js.map": "/static/js/main.187f3c48.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.1f1f19a3.js",
-    "runtime-main.js.map": "/static/js/runtime-main.1f1f19a3.js.map",
-    "static/js/2.6e1c61f2.chunk.js": "/static/js/2.6e1c61f2.chunk.js",
-    "static/js/2.6e1c61f2.chunk.js.map": "/static/js/2.6e1c61f2.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.924f4d45959bb29c114ef9266de32ab1.js": "/precache-manifest.924f4d45959bb29c114ef9266de32ab1.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/main.7b3b8bc7.chunk.css.map": "/static/css/main.7b3b8bc7.chunk.css.map",
-    "static/js/2.6e1c61f2.chunk.js.LICENSE.txt": "/static/js/2.6e1c61f2.chunk.js.LICENSE.txt"
+    "main.css": "https://nathaclmpaulino.github.io/crawlerRI/static/css/main.7b3b8bc7.chunk.css",
+    "main.js": "https://nathaclmpaulino.github.io/crawlerRI/static/js/main.187f3c48.chunk.js",
+    "main.js.map": "https://nathaclmpaulino.github.io/crawlerRI/static/js/main.187f3c48.chunk.js.map",
+    "runtime-main.js": "https://nathaclmpaulino.github.io/crawlerRI/static/js/runtime-main.6e8a8a56.js",
+    "runtime-main.js.map": "https://nathaclmpaulino.github.io/crawlerRI/static/js/runtime-main.6e8a8a56.js.map",
+    "static/js/2.6e1c61f2.chunk.js": "https://nathaclmpaulino.github.io/crawlerRI/static/js/2.6e1c61f2.chunk.js",
+    "static/js/2.6e1c61f2.chunk.js.map": "https://nathaclmpaulino.github.io/crawlerRI/static/js/2.6e1c61f2.chunk.js.map",
+    "index.html": "https://nathaclmpaulino.github.io/crawlerRI/index.html",
+    "precache-manifest.29c9e39c36bbe35700d6ca6e94a87174.js": "https://nathaclmpaulino.github.io/crawlerRI/precache-manifest.29c9e39c36bbe35700d6ca6e94a87174.js",
+    "service-worker.js": "https://nathaclmpaulino.github.io/crawlerRI/service-worker.js",
+    "static/css/main.7b3b8bc7.chunk.css.map": "https://nathaclmpaulino.github.io/crawlerRI/static/css/main.7b3b8bc7.chunk.css.map",
+    "static/js/2.6e1c61f2.chunk.js.LICENSE.txt": "https://nathaclmpaulino.github.io/crawlerRI/static/js/2.6e1c61f2.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.1f1f19a3.js",
+    "static/js/runtime-main.6e8a8a56.js",
     "static/js/2.6e1c61f2.chunk.js",
     "static/css/main.7b3b8bc7.chunk.css",
     "static/js/main.187f3c48.chunk.js"
