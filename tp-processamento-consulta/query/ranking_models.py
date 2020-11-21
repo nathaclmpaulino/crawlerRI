@@ -12,6 +12,8 @@ class IndexPreComputedVals():
         self.precompute_vals()
 
     def precompute_vals(self):
+        self.doc_count = self.index.document_count
+        
         """
         Inicializa os atributos por meio do indice (idx):
             doc_count: o numero de documentos que o indice possui
@@ -20,11 +22,76 @@ class IndexPreComputedVals():
         '''No modelo vetorial temos que calcular a norma de cada documento 𝑑𝑗. Esse calculo não pode ser feito durante o preprocessamento da consulta. Assim, na classe IndexPreComputedVals possui o atributo document_norm que é um dicionário que mapeia cada documnto 𝑗 à sua norma. Esse calculo é feito apenas uma vez ao iniciar o programa.
 Desta forma, você deverá terminar de implementar o método precompute_vals que percorre todo o índice e armazena a norma de cada documento.
         '''
-        self.document_norm = {}
-        self.doc_count = self.index.document_count
+        '''
+            Norma é a raiz quadrada do somatório de todos tf*idfs de todos os documentos que contem determinado term_id
+        '''
+        # O que é necessário:
+        # Número de documentos com o termo: <--> Length do dicionário de termos.
+        # ID do Termo: <--> Get Term Id:
+        # Frequência que o termo aparece: [TermFilePosition]
+        
+        keysList = [*self.index.dic_index.keys()]
+ 
+        # Número de palavras no arquivo e quais são as palavras
+        # 
+        '''     
+        lista = []
+        for i,key in zip(range(self.doc_count),keysList):
+            lista.append([])
+            print(self.index.get_occurrence_list(key).doc_count_with_term)
+            if self.index.get_occurrence_list(key) == i:
+                lista[i].append(self.index.get_occurrence_list(key).term_id)
+        
+        print(lista)
+        ''' 
+        lista = []
+        
+        vectorRank = VectorRankingModel(self.index)
+        
+        for i in range(self.doc_count):
+            lista.append({})
+        
+        print(lista)
+        for key in keysList:
+            print('Term id: ' + key)
+            if self.index.document_count_with_term(key) > 1:
+                for j in range(self.index.document_count_with_term(key)):
+                    print('Inserir: ' + str(j))
+                    lista[j][self.index.get_term_id(key)] = self.index.get_occurrence_list(key)[j].term_freq
+            else:
+                j = self.index.get_occurrence_list(key)[0].doc_id - 1
+                lista[j][self.index.get_term_id(key)] = self.index.get_occurrence_list(key)[0].term_freq
+       
+        for i in range(lista):
+            tf_idf = 0
+            for key in keysList:
+                term_id
+            
+        print(lista)
+        print(self.index.get_occurrence_list(key))
+        
+        print(self.index.dic_index)
+        
+        '''
+                        for doc in range(1:self.doc_count):
+                if self.index.get_occurence_list(key).doc_id == doc:
+                    self.index.get_occurence_list
+            for i in range (self.index.get_occurence_list(key).doc_id):
+                term_freq = term_freq + self.index.get_occurrence_list(key).term_freq
+            # Chama cálculo do TF * IDF
+
+            '''
+        '''
         for doc in range(self.doc_count):
             self.index
             raiz = math.sqrt(num)
+        
+        key = 0
+        for doc in range(self.doc_count):
+            key = key + 1
+            self.document_norm[key] =  
+        '''
+        self.document_norm = {}
         
 class RankingModel():
     @abstractmethod
