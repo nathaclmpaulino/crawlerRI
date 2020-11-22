@@ -19,9 +19,6 @@ class IndexPreComputedVals():
             doc_count: o numero de documentos que o indice possui
             document_norm: A norma por documento (cada termo é presentado pelo seu peso (tfxidf))
         """
-        '''No modelo vetorial temos que calcular a norma de cada documento 𝑑𝑗. Esse calculo não pode ser feito durante o preprocessamento da consulta. Assim, na classe IndexPreComputedVals possui o atributo document_norm que é um dicionário que mapeia cada documnto 𝑗 à sua norma. Esse calculo é feito apenas uma vez ao iniciar o programa.
-Desta forma, você deverá terminar de implementar o método precompute_vals que percorre todo o índice e armazena a norma de cada documento.
-        '''
         '''
             Norma é a raiz quadrada do somatório de todos tf*idfs de todos os documentos que contem determinado term_id
         '''
@@ -33,65 +30,82 @@ Desta forma, você deverá terminar de implementar o método precompute_vals que
         keysList = [*self.index.dic_index.keys()]
  
         # Número de palavras no arquivo e quais são as palavras
-        # 
-        '''     
-        lista = []
-        for i,key in zip(range(self.doc_count),keysList):
-            lista.append([])
-            print(self.index.get_occurrence_list(key).doc_count_with_term)
-            if self.index.get_occurrence_list(key) == i:
-                lista[i].append(self.index.get_occurrence_list(key).term_id)
-        
-        print(lista)
-        ''' 
-        lista = []
-        
-        vectorRank = VectorRankingModel(self.index)
-        
-        for i in range(self.doc_count):
-            lista.append({})
-        
-        print(lista)
-        for key in keysList:
-            print('Term id: ' + key)
-            if self.index.document_count_with_term(key) > 1:
-                for j in range(self.index.document_count_with_term(key)):
-                    print('Inserir: ' + str(j))
-                    lista[j][self.index.get_term_id(key)] = self.index.get_occurrence_list(key)[j].term_freq
-            else:
-                j = self.index.get_occurrence_list(key)[0].doc_id - 1
-                lista[j][self.index.get_term_id(key)] = self.index.get_occurrence_list(key)[0].term_freq
-       
-        for i in range(lista):
-            tf_idf = 0
-            for key in keysList:
-                
-            
-        print(lista)
-        print(self.index.get_occurrence_list(key))
-        
-        print(self.index.dic_index)
-        
-        '''
-                        for doc in range(1:self.doc_count):
-                if self.index.get_occurence_list(key).doc_id == doc:
-                    self.index.get_occurence_list
-            for i in range (self.index.get_occurence_list(key).doc_id):
-                term_freq = term_freq + self.index.get_occurrence_list(key).term_freq
-            # Chama cálculo do TF * IDF
 
-            '''
-        '''
-        for doc in range(self.doc_count):
-            self.index
-            raiz = math.sqrt(num)
-        
-        key = 0
-        for doc in range(self.doc_count):
-            key = key + 1
-            self.document_norm[key] =  
-        '''
+        lista = []
+        tf_idf_list = []
+        tf_idf_doc = []
+        D = {}
+        # doc_id como key e norma como value
         self.document_norm = {}
+        vectorRank = VectorRankingModel(self.index)
+        # cria lista vazia de dcicionarios com os documentos.
+        # cada dicionario representa um documento
+        for i in range(self.doc_count): 
+            lista.append({})
+            #tf_idf_list.append()
+        
+
+        for key in keysList:
+            if self.index.document_count_with_term(key) > 1:
+                for doc_num in range(self.index.document_count_with_term(key)): # itera sobre a quantidade de documentos com o termo
+                    doc_id_list = self.index.get_occurrence_list(key)
+                    doc_pos = (doc_id_list[doc_num].doc_id) - 1
+                    # armazena o term_freq na lista de freq de cada termo em um doc
+                    lista[doc_pos][self.index.get_term_id(key)] = doc_id_list[doc_num].term_freq
+            else:
+                # o term_id é a chave de cada dicionario dentro de um documento
+                # os valores são o term_freq
+                doc_num = self.index.get_occurrence_list(key)[0].doc_id - 1
+                # acessa posicão do doc na lista e insere os term freq
+                lista[doc_num][self.index.get_term_id(key)] = self.index.get_occurrence_list(key)[0].term_freq
+       
+        # calcular todos os tf_idf de cada palavra em um doc
+        for key in list(self.index.dic_index.keys()):
+            lista_ocorrencias = self.index.get_occurrence_list(key)
+            num_docs_with_term = len(lista_ocorrencias)
+            # acessa a lista de ocorrencias de um termo pra pegar os documentos relacionados
+            for term_occur in lista_ocorrencias:
+                freq_term = term_occur.term_freq
+                doc_count = len(lista) # total de docs
+                term_occur.term_freq
+                print(term_occur)
+                if freq_term != 0 and num_docs_with_term != 0: 
+                    tf_idf_term = vectorRank.tf_idf(doc_count, freq_term, num_docs_with_term)
+                    print(tf_idf_term)
+                    D[key]= tf_idf_term
+            tf_idf_list.append(D)
+            print('outro')
+            '''
+            for key,value in lista[doc].items(): # para cada chave term_id no doc, acessar os trens
+                # key é o term_id
+                print(key)
+                num_docs_with_term = len(self.index.get_occurrence_list(key))
+                freq_term = lista[doc][key] # os values são a frequencia de cada termo naquele doc
+                print(f'freq: {freq_term}')
+                print(f'num_docs_with_term: {num_docs_with_term}')
+                doc_count = len(lista) # total de docs
+                # realiza calculo
+                print('calculo')
+                if freq_term != 0 and num_docs_with_term != 0: 
+                    tf_idf_term = vectorRank.tf_idf(doc_count, freq_term, num_docs_with_term)
+                    print(tf_idf_term)
+                    D[key]= tf_idf_term
+            tf_idf_list.append(D)
+        '''
+        # cada doc agora tem uma lista de tf_idf
+        # acessar para calculo da norma
+        for doc in range(len(lista)):
+            doc_id = doc + 1
+            for key,value in lista[doc].items():
+                tf_idf_term = lista[doc][key]
+                tf_idf_doc.append(tf_idf_term*tf_idf_term)
+            soma = sum(tf_idf_doc)
+            tf_idf_doc = []
+            # calcula a norma dos tf_idf de cada termo em cada doc
+            tf_idf_norma_doc = math.sqrt(soma)
+            self.document_norm[doc_id] = tf_idf_norma_doc     
+        
+
         
 class RankingModel():
     @abstractmethod
@@ -170,6 +184,7 @@ class VectorRankingModel(RankingModel):
         tf = VectorRankingModel.tf(freq_term)
         idf = VectorRankingModel.idf(doc_count,num_docs_with_term)
         #print(f"TF:{tf} IDF:{idf} n_i: {num_docs_with_term} N: {doc_count}")
+        print(tf*idf, "tf-idf")
         return tf*idf
 
     def get_ordered_docs(self,query:Mapping[str,TermOccurrence],
