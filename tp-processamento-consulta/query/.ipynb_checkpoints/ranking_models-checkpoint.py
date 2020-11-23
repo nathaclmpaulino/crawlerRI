@@ -145,7 +145,47 @@ class VectorRankingModel(RankingModel):
     def get_ordered_docs(self,query:Mapping[str,TermOccurrence],
                               docs_occur_per_term:Mapping[str,List[TermOccurrence]]) -> (List[int], Mapping[int,float]):
             documents_weight = {}
+            doc_count = self.idx_pre_comp_vals.doc_count
+            
+            tf_idf_list = {}
+            tf_idf_document_list = {}
+            
+            documents_id = range(1, doc_count+1)
+        
+            # Instanciando um dicionário dentro do dicinário para montar a tabela de tf_idf
+            for doc in documents_id:
+                tf_idf_document_list[doc] = {}
+            
+            for term in query:
+                documents_unread = list(documents_id)
+                
+                try:
+                    tf_idf = VectorRankingModel.tf_idf(doc_count, query[term].term_freq, len(docs_occur_per_term[term]))
+                    tf_idf_list[term] = tf_idf
 
 
+
+                    for ocurrence in docs_occur_per_term[term]:
+                        documents_unread.remove(ocurrence.doc_id)
+                        tf_idf_document_list[ocurrence.doc_id][term] = tf_idf
+                except:
+                    tf_idf_list[term] = 0
+                    
+                # Iterando sobre os documentos que não possuem ocurrence para este termo
+                for doc_id in documents_unread:
+                    tf_idf_document_list[doc_id][term] = 0
+            
+            for doc_id in tf_idf_document_list: 
+                weight = 0
+                for term in tf_idf_document_list[doc_id]:
+                    wij = tf_idf_document_list[doc_id][term];
+                    wiq = tf_idf_list[term]
+                    weight += wij * wiq
+                if(weight > 0):
+                    documents_weight[doc_id] = round(weight / self.idx_pre_comp_vals.document_norm[doc_id], 2)
+             
+            #print(self.rank_document_ids(documents_weight))
+            #print(documents_weight)
+            
             #retona a lista de doc ids ordenados de acordo com o TF IDF
             return self.rank_document_ids(documents_weight),documents_weight

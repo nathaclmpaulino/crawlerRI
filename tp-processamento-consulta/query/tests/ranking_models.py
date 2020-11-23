@@ -93,8 +93,10 @@ class RankingModelTest(unittest.TestCase):
         
         arr_lst_esperado_per_query  = [[[2,4,1],[]],[[1,2,3]]]
         peso_por_doc_esperado_per_query = [[{1:0.12,2:1.01,3:None,4:0.9},{}],
-                                            [{1:0.709, 2: 0.19, 3:0.15}]]
+                                            [{1:0.35, 2: 0.19, 3:0.15}]]
         arr_norm_por_index = [{1:1.44,2:1.16,3:2.08,4:1.3},{1:1.93,2:1.78,3:2.31}]
+        
+        
         for idx, map_index in enumerate(self.arr_indexes):
             precomp.document_norm = arr_norm_por_index[idx]
             precomp.doc_count = len(arr_norm_por_index[idx].keys())
@@ -112,5 +114,6 @@ class RankingModelTest(unittest.TestCase):
                         self.assertTrue(doc_id not in doc_weights, f"O documento {doc_id} não deveria ser recuperado da consulta {query_position} indice {idx}")
                     else:
                         self.assertAlmostEqual(peso, doc_weights[doc_id], places=2,msg=f"Peso inesperado do documento {doc_id} consulta {query_position} índice {idx}. Peso calculado:{doc_weights[doc_id]} deveria ser: {peso}")
+
 if __name__ == "__main__":
     unittest.main()
