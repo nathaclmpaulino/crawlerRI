@@ -24,7 +24,7 @@ class QueryRunner:
 				dic_relevance_docs[arquiv] = set(arq.readline().split(","))
 		return dic_relevance_docs
 
-	def count_topn_relevant(self,n,respostas:List[int],doc_relevantes:Set[int]) -> int:
+	def count_topn_relevant(self,n, respostas:List[int],doc_relevantes:Set[int]) -> int:
 		"""
 		Calcula a quantidade de documentos relevantes na top n posições da lista lstResposta que é a resposta a uma consulta
 		Considere que respostas já é a lista de respostas ordenadas por um método de processamento de consulta (BM25, Modelo vetorial).
@@ -32,8 +32,17 @@ class QueryRunner:
 		"""
 		#print(f"Respostas: {respostas} doc_relevantes: {doc_relevantes}")
 		relevance_count = 0
-        
-
+		# percorre as n primeiras posições da lista de respostas:
+		if len(respostas) == 0:
+			return relevance_count
+		for doc in doc_relevantes:
+			posicao = 0
+			# Para cada doc, verifica se esta em respostas
+			# se sim, adiciona em relevance_count
+			while posicao < n and (posicao < len(respostas)):
+				if doc == respostas[posicao]:
+					relevance_count = relevance_count + 1
+				posicao = posicao + 1
 		return relevance_count
 
 	def get_query_term_occurence(self, query:str) -> Mapping[str,TermOccurrence]:
@@ -76,7 +85,7 @@ class QueryRunner:
 		return None
 
 	@staticmethod
-	def runQuery(query:str, indice:Index, indice_pre_computado: , map_relevantes):
+	def runQuery(query:str, indice:Index, indice_pre_computado): # removi virgula antes de map_relevantes #: map_relevantes
 		time_checker = CheckTime()
 
 		#PEça para usuario selecionar entre Booleano ou modelo vetorial para intanciar o QueryRunner

@@ -93,7 +93,7 @@ class RankingModelTest(unittest.TestCase):
         
         arr_lst_esperado_per_query  = [[[2,4,1],[]],[[1,2,3]]]
         peso_por_doc_esperado_per_query = [[{1:0.12,2:1.01,3:None,4:0.9},{}],
-                                            [{1:0.35, 2: 0.19, 3:0.15}]]
+                                            [{1:0.709, 2: 0.19, 3:0.15}]]
         arr_norm_por_index = [{1:1.44,2:1.16,3:2.08,4:1.3},{1:1.93,2:1.78,3:2.31}]
         
         

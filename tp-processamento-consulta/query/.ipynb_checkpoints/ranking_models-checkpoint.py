@@ -22,6 +22,7 @@ class IndexPreComputedVals():
         '''
         
         vectorRank = VectorRankingModel(self.index)
+        # Obtem o total de documentos
         self.doc_count = self.index.document_count
         
         tf_idf_list = {}
@@ -34,6 +35,7 @@ class IndexPreComputedVals():
         
         # Iterando sobre os termos existêntes
         for term in self.index.dic_index:
+            # ni = doc count with term
             ni = self.index.document_count_with_term(term)
             idf = vectorRank.idf(self.doc_count, ni)
             
@@ -43,6 +45,7 @@ class IndexPreComputedVals():
             # Iterando sobre as ocorrências de um termo
             for ocurrence in self.index.get_occurrence_list(term):
                 documents_unread.remove(ocurrence.doc_id)
+                # cria matriz de tf_idf com doc na coluna e o tf_idf de cada termo daquele doc na linha
                 tf_idf_list[ocurrence.doc_id][term] = vectorRank.tf_times_idf(vectorRank.tf(ocurrence.term_freq), idf)
             
             # Iterando sobre os documentos que não possuem ocurrence para este termo
@@ -55,7 +58,7 @@ class IndexPreComputedVals():
             norma = 0
             for tf_idf in tf_idf_list[doc_id]:
                 norma += tf_idf_list[doc_id][tf_idf] ** 2
-                
+            # preenche o dic com a key doc_id e value norma    
             self.document_norm[doc_id] = round(math.sqrt(norma), 2) 
        
 class RankingModel():
@@ -130,7 +133,7 @@ class VectorRankingModel(RankingModel):
     def idf(doc_count:int, num_docs_with_term:int )->float:
         # 𝐼𝐷𝐹𝑖=𝑙𝑜𝑔2(𝑁/𝑛𝑖)
         IDF = math.log((doc_count/num_docs_with_term),2)
-        return round(IDF,3)
+        return IDF
     
     @staticmethod
     def tf_times_idf(tf:float, idf:float) -> float:
@@ -163,8 +166,6 @@ class VectorRankingModel(RankingModel):
                     tf_idf = VectorRankingModel.tf_idf(doc_count, query[term].term_freq, len(docs_occur_per_term[term]))
                     tf_idf_list[term] = tf_idf
 
-
-
                     for ocurrence in docs_occur_per_term[term]:
                         documents_unread.remove(ocurrence.doc_id)
                         tf_idf_document_list[ocurrence.doc_id][term] = tf_idf
@@ -174,7 +175,7 @@ class VectorRankingModel(RankingModel):
                 # Iterando sobre os documentos que não possuem ocurrence para este termo
                 for doc_id in documents_unread:
                     tf_idf_document_list[doc_id][term] = 0
-            
+            # peso por doc_id
             for doc_id in tf_idf_document_list: 
                 weight = 0
                 for term in tf_idf_document_list[doc_id]:
@@ -182,7 +183,7 @@ class VectorRankingModel(RankingModel):
                     wiq = tf_idf_list[term]
                     weight += wij * wiq
                 if(weight > 0):
-                    documents_weight[doc_id] = round(weight / self.idx_pre_comp_vals.document_norm[doc_id], 2)
+                    documents_weight[doc_id] = weight / self.idx_pre_comp_vals.document_norm[doc_id]
              
             #print(self.rank_document_ids(documents_weight))
             #print(documents_weight)

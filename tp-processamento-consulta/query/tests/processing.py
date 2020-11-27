@@ -34,7 +34,7 @@ class ProcessingTest(unittest.TestCase):
                                    14:[5,0,4,0]}
 
         for n,arr_resp_esperada in resp_esperada_por_top_n.items():
-            #print(f"TOP {n}")
+            print(f"TOP {n}")
             for i,resp_esperada in enumerate(arr_resp_esperada):
                 resposta = self.queryRunner.count_topn_relevant(n, arr_lists[i], set_relevantes)
                 self.assertEqual(resp_esperada, resposta, msg=f"# de relevantes esperadas top {n}: {resp_esperada} resposta obtida: {resposta}")
