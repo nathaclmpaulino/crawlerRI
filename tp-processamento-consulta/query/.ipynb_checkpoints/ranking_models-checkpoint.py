@@ -60,7 +60,7 @@ class IndexPreComputedVals():
                 norma += tf_idf_list[doc_id][tf_idf] ** 2
             # preenche o dic com a key doc_id e value norma    
             self.document_norm[doc_id] = round(math.sqrt(norma), 2) 
-       
+
 class RankingModel():
     @abstractmethod
     def get_ordered_docs(self,query:Mapping[str,TermOccurrence],
@@ -73,8 +73,8 @@ class RankingModel():
         return doc_ids
 
 class OPERATOR(Enum):
-  AND = 1
-  OR = 2
+    AND = 1
+    OR = 2
     
 #Atividade 1
 class BooleanRankingModel(RankingModel):

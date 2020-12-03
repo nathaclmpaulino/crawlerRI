@@ -46,6 +46,7 @@ class QueryRunner:
 				posicao = posicao + 1
 		return relevance_count
 
+
 	def get_query_term_occurence(self, query:str) -> Mapping[str,TermOccurrence]:
 		"""
 			Preprocesse a consulta da mesma forma que foi preprocessado o texto do documento (use a classe Cleaner para isso).
@@ -58,9 +59,9 @@ class QueryRunner:
 		map_term_occur = {}
 		# preprocessando a consulta
 		query_dividida = query.split()
-		query_dividida=[self.cleaner.preprocess_word(a) for a in query_dividida] # remove duplicatas
+		query_dividida=[self.cleaner.preprocess_word(a) for a in query_dividida]
 		c = Counter(query_dividida)
-		query_dividida = list(dict.fromkeys(query_dividida))
+		query_dividida = list(dict.fromkeys(query_dividida)) # remove duplicatas
 		for parte in query_dividida:
 			termo_preprocessado = self.cleaner.preprocess_word(parte)
 			#print(termo_preprocessado)             
@@ -87,13 +88,14 @@ class QueryRunner:
 		"""
 		dic_terms = {}
 		for term in terms:
-			print(term)
+			#print(term)
 			lista_ocorrencia = self.index.get_occurrence_list(term)
 			if lista_ocorrencia is None:
 				dic_terms[term] = []
 			else:
 				dic_terms[term] = lista_ocorrencia
 		return dic_terms
+
     
 	def get_docs_term(self, query:str) -> List[int]:
 		"""
@@ -101,14 +103,17 @@ class QueryRunner:
 			usando o modelo especificado pelo atributo ranking_model
 		"""
 		#Obtenha, para cada termo da consulta, sua ocorrencia por meio do método get_query_term_occurence
-		dic_query_occur = None
+		dic_query_occur = self.get_query_term_occurence(query)
 
 		#obtenha a lista de ocorrencia dos termos da consulta
-		dic_occur_per_term_query = None
+		query_dividida=query.split()
+		query_dividida = [self.cleaner.preprocess_word(a) for a in query_dividida]
+		dic_occur_per_term_query = self.get_occurrence_list_per_term(query_dividida)
 
 
 		#utilize o ranking_model para retornar o documentos ordenados considrando dic_query_occur e dic_occur_per_term_query
-		return None
+		return self.ranking_model.get_ordered_docs(dic_query_occur, dic_occur_per_term_query)
+
 
 	@staticmethod
 	def runQuery(query:str, indice:Index, indice_pre_computado): # removi virgula antes de map_relevantes #: map_relevantes
