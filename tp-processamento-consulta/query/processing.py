@@ -71,8 +71,9 @@ class QueryRunner:
 					TermOccurrence_file = self.index.next_from_file(idx_file)
 					while(TermOccurrence_file is not None):
 						#print(TermOccurrence_file)                        
-						if termo_id == TermOccurrence_file.term_id and TermOccurrence_file.term_freq == c[parte]:
-							#print('entra: ',TermOccurrence_file.term_id)                            
+						if termo_id == TermOccurrence_file.term_id:
+							#print('entra: ',TermOccurrence_file.term_id)
+							TermOccurrence_file.term_freq = c[parte]
 							TermOccurrence_file.doc_id = None
 							map_term_occur[termo_preprocessado]=TermOccurrence_file
 						TermOccurrence_file = self.index.next_from_file(idx_file)
@@ -84,10 +85,16 @@ class QueryRunner:
 			Retorna dicionario a lista de ocorrencia no indice de cada termo passado como parametro.
 			Caso o termo nao exista, este termo possuirá uma lista vazia
 		"""
-		lista_ocorrencia = indice.get_occurrence_list(query)
-
-
+		dic_terms = {}
+		for term in terms:
+			print(term)
+			lista_ocorrencia = self.index.get_occurrence_list(term)
+			if lista_ocorrencia is None:
+				dic_terms[term] = []
+			else:
+				dic_terms[term] = lista_ocorrencia
 		return dic_terms
+    
 	def get_docs_term(self, query:str) -> List[int]:
 		"""
 			A partir do indice, retorna a lista de ids de documentos desta consulta

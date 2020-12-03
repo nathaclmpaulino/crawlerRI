@@ -69,7 +69,7 @@ class ProcessingTest(unittest.TestCase):
                 self.assertTrue(bol_encontrou,msg=f"Não foi possível encontrar o termo '{term}' do documento {expected_occur.doc_id}")
 
     def test_get_query_term_occurence(self):
-        arr_queries = ["crocodilo","vocês","Vocês estejam","vocês vocês vocês crocodilo"]
+        arr_queries = ["crocodilo","vocês","Vocês estejam","vocês vocês crocodilo"]
         
         voces_id = self.index.get_term_id("vocês")
         estejam_id = self.index.get_term_id("estejam")
@@ -84,7 +84,7 @@ class ProcessingTest(unittest.TestCase):
 
                                 },
                                 {
-                                    "vocês":TermOccurrence(None,voces_id,3) # conversar com hassan que isso nao tem no arquivo. é 3
+                                    "vocês":TermOccurrence(None,voces_id,2)
                                 }
 
                                 ]
