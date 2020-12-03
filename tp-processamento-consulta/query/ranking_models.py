@@ -168,6 +168,7 @@ class VectorRankingModel(RankingModel):
 
                     for ocurrence in docs_occur_per_term[term]:
                         documents_unread.remove(ocurrence.doc_id)
+                        tf_idf = VectorRankingModel.tf_idf(doc_count, ocurrence.term_freq, len(docs_occur_per_term[term]))
                         tf_idf_document_list[ocurrence.doc_id][term] = tf_idf
                 except:
                     tf_idf_list[term] = 0
