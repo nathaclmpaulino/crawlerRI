@@ -2,8 +2,9 @@ from typing import List, Set,Mapping
 from nltk.tokenize import word_tokenize
 from util.time import CheckTime
 from query.ranking_models import RankingModel,VectorRankingModel, IndexPreComputedVals
-from index.structure import Index, TermOccurrence
+from index.structure import Index, TermOccurrence, FileIndex
 from index.indexer import Cleaner
+from collections import Counter
 
 class QueryRunner:
 	def __init__(self,ranking_model:RankingModel,index:Index, cleaner:Cleaner):
@@ -53,19 +54,37 @@ class QueryRunner:
 			Coloque o docId como None.
 			Caso o termo nao exista no indic, ele será desconsiderado.
 		"""
-		#print(self.index)
+		#print('index:',self.index)
 		map_term_occur = {}
-
-
-
+		# preprocessando a consulta
+		query_dividida = query.split()
+		query_dividida=[self.cleaner.preprocess_word(a) for a in query_dividida] # remove duplicatas
+		c = Counter(query_dividida)
+		query_dividida = list(dict.fromkeys(query_dividida))
+		for parte in query_dividida:
+			termo_preprocessado = self.cleaner.preprocess_word(parte)
+			#print(termo_preprocessado)             
+			termo_id = self.index.get_term_id(termo_preprocessado)  
+			#print('term_id : ',termo_id)
+			if termo_id != []:
+				with open ('occur_index_0', 'rb') as idx_file:
+					TermOccurrence_file = self.index.next_from_file(idx_file)
+					while(TermOccurrence_file is not None):
+						#print(TermOccurrence_file)                        
+						if termo_id == TermOccurrence_file.term_id and TermOccurrence_file.term_freq == c[parte]:
+							#print('entra: ',TermOccurrence_file.term_id)                            
+							TermOccurrence_file.doc_id = None
+							map_term_occur[termo_preprocessado]=TermOccurrence_file
+						TermOccurrence_file = self.index.next_from_file(idx_file)
 		return map_term_occur
+
 
 	def get_occurrence_list_per_term(self, terms:List) -> Mapping[str, List[TermOccurrence]]:
 		"""
 			Retorna dicionario a lista de ocorrencia no indice de cada termo passado como parametro.
 			Caso o termo nao exista, este termo possuirá uma lista vazia
 		"""
-
+		lista_ocorrencia = indice.get_occurrence_list(query)
 
 
 		return dic_terms

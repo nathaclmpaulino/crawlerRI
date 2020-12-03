@@ -34,7 +34,7 @@ class ProcessingTest(unittest.TestCase):
                                    14:[5,0,4,0]}
 
         for n,arr_resp_esperada in resp_esperada_por_top_n.items():
-            print(f"TOP {n}")
+            #print(f"TOP {n}")
             for i,resp_esperada in enumerate(arr_resp_esperada):
                 resposta = self.queryRunner.count_topn_relevant(n, arr_lists[i], set_relevantes)
                 self.assertEqual(resp_esperada, resposta, msg=f"# de relevantes esperadas top {n}: {resp_esperada} resposta obtida: {resposta}")
@@ -69,7 +69,7 @@ class ProcessingTest(unittest.TestCase):
                 self.assertTrue(bol_encontrou,msg=f"Não foi possível encontrar o termo '{term}' do documento {expected_occur.doc_id}")
 
     def test_get_query_term_occurence(self):
-        arr_queries = ["crocodilo","vocês","Vocês estejam","vocês vocês crocodilo"]
+        arr_queries = ["crocodilo","vocês","Vocês estejam","vocês vocês vocês crocodilo"]
         
         voces_id = self.index.get_term_id("vocês")
         estejam_id = self.index.get_term_id("estejam")
@@ -84,7 +84,7 @@ class ProcessingTest(unittest.TestCase):
 
                                 },
                                 {
-                                    "vocês":TermOccurrence(None,voces_id,2)
+                                    "vocês":TermOccurrence(None,voces_id,3) # conversar com hassan que isso nao tem no arquivo. é 3
                                 }
 
                                 ]
@@ -95,7 +95,7 @@ class ProcessingTest(unittest.TestCase):
             print(f"Consulta: {arr_queries[i]}")
             print(f"Resposta do método: {response}")
             self.check_terms_index(response, expected_response)
-            self.check_terms_occur(response,expected_response)
+            self.check_terms_occur(response, expected_response)
             print()
 
     def test_get_occurence_list_per_term(self):

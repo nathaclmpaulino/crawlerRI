@@ -156,6 +156,7 @@ class TermFilePosition:
 
     def __str__(self):
         return f"term_id: {self.term_id}, doc_count_with_term: {self.doc_count_with_term}, term_file_start_pos: {self.term_file_start_pos}"
+
     def __repr__(self):
         return str(self)
     
@@ -172,7 +173,12 @@ class FileIndex(Index): # armazena as ocorrencias em arquivo
         self.str_idx_file_name = None
 
     def get_term_id(self, term:str):
-        return self.dic_index[term].term_id
+        #print("dict na structure: ",self.dic_index.keys())
+        if term in self.dic_index:
+            return self.dic_index[term].term_id
+        else:
+            return []
+        
 
     def create_index_entry(self, term_id:int) -> TermFilePosition:
         return  TermFilePosition(term_id)
