@@ -7,14 +7,22 @@ import api from '../../services/api';
 import styles from './Main.module.scss';
  
 export default function Main() {
-    const [ id, setId ] = useState('');
+    const [ query, setQuery ] = useState('');
 
-    async function handleLogon(e) {
+    async function handleQuery(e) {
         e.preventDefault();
 
+        let params = undefined;
+
+        if (query) {
+            params = {
+                query
+            }
+        }
+
         try {
-            const response = await api.post('session', { id });
-            
+            const response = await api.get('buscador', { params });   
+            alert(`Busca realizada com sucesso: ${query}`);
         } catch (err) {
             alert('Falha ao efetuar busca, favor tentar novamente');
         }
@@ -26,13 +34,13 @@ export default function Main() {
             <section className={styles["form"]}>
                 <img src={logoImg} alt="Buscador"/>
 
-                <form onSubmit={handleLogon}>
+                <form onSubmit={handleQuery}>
                     <h1>Faça sua busca</h1>
 
                     <input 
                         placeholder="Sua Busca"
-                        value={id}
-                        onChange={e => setId(e.target.value)}
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
                     />
                     <button className="button" type="submit">Buscar</button>
                 </form>
