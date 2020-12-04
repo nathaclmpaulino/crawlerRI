@@ -21,45 +21,27 @@ class IndexPreComputedVals():
             Norma é a raiz quadrada do somatório de todos tf*idfs de todos os documentos que contem determinado term_id
         '''
         
-        vectorRank = VectorRankingModel(self.index)
-        # Obtem o total de documentos
-        self.doc_count = self.index.document_count
-        
-        tf_idf_list = {}
-        
-        documents_id = range(1, self.doc_count+1)
-        
-        # Instanciando um dicionário dentro do dicinário para montar a tabela de tf_idf
-        for doc in documents_id:
-            tf_idf_list[doc] = {}
-        
-        # Iterando sobre os termos existêntes
-        for term in self.index.dic_index:
-            # ni = doc count with term
-            ni = self.index.document_count_with_term(term)
-            idf = vectorRank.idf(self.doc_count, ni)
-            
-            #Lista de documentos que ainda não foram lidos por alguma ocorrência
-            documents_unread = list(documents_id)
-            
-            # Iterando sobre as ocorrências de um termo
-            for ocurrence in self.index.get_occurrence_list(term):
-                documents_unread.remove(ocurrence.doc_id)
-                # cria matriz de tf_idf com doc na coluna e o tf_idf de cada termo daquele doc na linha
-                tf_idf_list[ocurrence.doc_id][term] = vectorRank.tf_times_idf(vectorRank.tf(ocurrence.term_freq), idf)
-            
-            # Iterando sobre os documentos que não possuem ocurrence para este termo
-            for doc_id in documents_unread:
-                tf_idf_list[doc_id][term] = vectorRank.tf_times_idf(vectorRank.tf(0), idf)
-        
-        # Iterando sobre a tabela de tf_idf para aplicar fórmula de norma
         self.document_norm = {}
-        for doc_id in tf_idf_list:
-            norma = 0
-            for tf_idf in tf_idf_list[doc_id]:
-                norma += tf_idf_list[doc_id][tf_idf] ** 2
-            # preenche o dic com a key doc_id e value norma    
-            self.document_norm[doc_id] = round(math.sqrt(norma), 2) 
+        self.doc_count = self.index.document_count
+        sum_doc  = dict() 
+        term_idf = dict()
+        for term in list(self.index.dic_index.keys()):
+            occurrence_list = self.index.get_occurrence_list(term)
+            for item in occurrence_list:
+                tf_idf = VectorRankingModel.tf_idf(self.doc_count,item.term_freq,len(occurrence_list))
+                if term not in term_idf.keys():
+                    term_idf[term] = list()
+                    term_idf[term].append((item.doc_id,tf_idf))
+                else:
+                    term_idf[term].append((item.doc_id,tf_idf))
+        for term in term_idf.keys():
+            for occurrence in term_idf[term]:
+                if occurrence[0] in sum_doc:
+                    sum_doc[occurrence[0]] =  sum_doc[occurrence[0]] + math.pow(occurrence[1],2)
+                else: 
+                    sum_doc[occurrence[0]] = math.pow(occurrence[1],2)
+        for x in self.index.set_documents:
+            self.document_norm[x] = round(math.sqrt(sum_doc[x]),2) 
 
 class RankingModel():
     @abstractmethod

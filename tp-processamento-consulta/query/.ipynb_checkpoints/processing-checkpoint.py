@@ -116,30 +116,34 @@ class QueryRunner:
 
 
 	@staticmethod
-	def runQuery(query:str, indice:Index, indice_pre_computado): # removi virgula antes de map_relevantes #: map_relevantes
-		time_checker = CheckTime()
-
+	def runQuery(query:str, indice:Index, indice_pre_computado, map_relevantes, modelo): # removi virgula antes de map_relevantes #: map_relevantes
+		print("ola mundou deu bom")
+		#time_checker = CheckTime()
+        
+		cleaner = Cleaner(stop_words_file="stopwords.txt",language="portuguese", perform_stop_words_removal=False,perform_accents_removal=False, perform_stemming=False)
+        
 		#PEça para usuario selecionar entre Booleano ou modelo vetorial para intanciar o QueryRunner
 		#apropriadamente. NO caso do booleano, vc deve pedir ao usuario se será um "and" ou "or" entre os termos.
 		#abaixo, existem exemplos fixos.
-		qr = QueryRunner(indice, VectorRankingModel(indice_pre_computado))
-		time_checker.print_delta("Query Creation")
+		qr = QueryRunner(modelo, indice, cleaner)
+		#time_checker.print_delta("Query Creation")
 
 
 		#Utilize o método get_docs_term para obter a lista de documentos que responde esta consulta
-		resposta = None
-		time_checker.print_delta("anwered with {len(respostas)} docs")
-
+		respostas = qr.get_docs_term(query)
+		#time_checker.print_delta("anwered with {len(respostas)} docs")
+		print(respostas[0])
 		#nesse if, vc irá verificar se o termo possui documentos relevantes associados a ele
 		#se possuir, vc deverá calcular a Precisao e revocação nos top 5, 10, 20, 50.
 		#O for que fiz abaixo é só uma sugestao e o metododo countTopNRelevants podera auxiliar no calculo da revocacao e precisao
-		if(True):
+		if(query in map_relevantes.keys()):
 			arr_top = [5,10,20,50]
 			revocacao = 0
 			precisao = 0
+			print('entrou aqui')
 			for n in arr_top:
-				revocacao = 0#substitua aqui pelo calculo da revocacao topN
-				precisao = 0#substitua aqui pelo calculo da revocacao topN
+				revocacao = qr.count_topn_relevant(n, respostas[0], map_relevantes[query]) / len(map_relevantes[query])
+				precisao = qr.count_topn_relevant(n, respostas[0], map_relevantes[respostas]) / len(respostas[0])
 				print("Precisao @{n}: {precisao}")
 				print("Recall @{n}: {revocacao}")
 
@@ -147,8 +151,20 @@ class QueryRunner:
 
 	@staticmethod
 	def main():
+		index = FileIndex()
+		index.index("sao paulo",37632,1)
+		index.index("irlanda",39300,3)
+		index.index("espero",39300,1)
+		index.index("que",11953,1)
+		index.index("irlanda",11953,1)
+		index.index("estejam",11953,1)
+		index.index("se",11953,1)
+		index.index("irlanda",37632,4)
+		index.finish_indexing()
+
+		precomp = IndexPreComputedVals(index)
 		#leia o indice (base da dados fornecida)
-		index = None
+		return index, precomp
 
 		#Checagem se existe um documento (apenas para teste, deveria existir)
 		print(f"Existe o doc? index.hasDocId(105047)")
