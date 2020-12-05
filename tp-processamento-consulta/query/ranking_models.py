@@ -52,6 +52,9 @@ class RankingModel():
     def rank_document_ids(self,documents_weight):
         doc_ids = list(documents_weight.keys())
         doc_ids.sort(key= lambda x:-documents_weight[x])
+        
+        print('Doc IDs')
+        print(doc_ids)
         return doc_ids
 
 class OPERATOR(Enum):
@@ -74,11 +77,14 @@ class BooleanRankingModel(RankingModel):
         comum = [key for key, count in Counter(lista).items() if count >= len(map_lst_occurrences)]
         for i in comum:
             set_ids.add(i)
+        
+        print('Set IDS')
+        print(set_ids)
         return set_ids
 
 
     def union_all(self,map_lst_occurrences:Mapping[str,List[TermOccurrence]]) -> List[int]:
-        set_ids = set()
+        set_ids = []
         lista = []
 
         for key,value in map_lst_occurrences.items():
@@ -86,12 +92,15 @@ class BooleanRankingModel(RankingModel):
                 lista.append(item.doc_id)
         todos = list(dict.fromkeys(lista))
         for i in todos:
-            set_ids.add(i)
+            set_ids.append(i)
+        print('Set IDS')
+        print(set_ids)
         return set_ids
 
     def get_ordered_docs(self,query:Mapping[str,TermOccurrence],
                               map_lst_occurrences:Mapping[str,List[TermOccurrence]]) -> (List[int], Mapping[int,float]):
         """Considere que map_lst_occurrences possui as ocorrencias apenas dos termos que existem na consulta"""
+        print(map_lst_occurrences)
         if self.operator == OPERATOR.AND:
             return self.intersection_all(map_lst_occurrences),None
         else:
@@ -136,7 +145,11 @@ class VectorRankingModel(RankingModel):
             tf_idf_document_list = {}
             
             documents_id = range(1, doc_count+1)
-        
+            print('Query')
+            print(query)
+            print('DCPT')
+            print(docs_occur_per_term)
+            
             # Instanciando um dicionário dentro do dicinário para montar a tabela de tf_idf
             for doc in documents_id:
                 tf_idf_document_list[doc] = {}
@@ -144,6 +157,7 @@ class VectorRankingModel(RankingModel):
             for term in query:
                 documents_unread = list(documents_id)
                 
+                print(documents_unread)
                 try:
                     tf_idf = VectorRankingModel.tf_idf(doc_count, query[term].term_freq, len(docs_occur_per_term[term]))
                     tf_idf_list[term] = tf_idf
@@ -167,9 +181,11 @@ class VectorRankingModel(RankingModel):
                     weight += wij * wiq
                 if(weight > 0):
                     documents_weight[doc_id] = weight / self.idx_pre_comp_vals.document_norm[doc_id]
-             
+            
             #print(self.rank_document_ids(documents_weight))
             #print(documents_weight)
             
             #retona a lista de doc ids ordenados de acordo com o TF IDF
+            print('Documents_weight')
+            print(documents_weight)
             return self.rank_document_ids(documents_weight),documents_weight

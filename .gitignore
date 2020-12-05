@@ -3,3 +3,4 @@ tp2-indice/miniWikiSample
 tp2-indice/*json
 tp2-indice/vocabulary*.txt
 tp2-indice/occur_index_13
+buscador/package-lock.json
