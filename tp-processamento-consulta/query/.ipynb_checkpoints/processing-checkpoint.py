@@ -37,11 +37,12 @@ class QueryRunner:
 		if len(respostas) == 0:
 			return relevance_count
 		for doc in doc_relevantes:
+			doc_int = int(doc)         
 			posicao = 0
 			# Para cada doc, verifica se esta em respostas
 			# se sim, adiciona em relevance_count
 			while posicao < n and (posicao < len(respostas)):
-				if doc == respostas[posicao]:
+				if doc_int == respostas[posicao]:
 					relevance_count = relevance_count + 1
 				posicao = posicao + 1
 		return relevance_count
@@ -102,19 +103,12 @@ class QueryRunner:
 			A partir do indice, retorna a lista de ids de documentos desta consulta
 			usando o modelo especificado pelo atributo ranking_model
 		"""
-		print('Query ' + query)
 		#Obtenha, para cada termo da consulta, sua ocorrencia por meio do método get_query_term_occurence
 		dic_query_occur = self.get_query_term_occurence(query)
-		print('Dic_query_occur')        
-		print(dic_query_occur)
 		#obtenha a lista de ocorrencia dos termos da consulta
 		query_dividida=query.split()
-		query_dividida = [self.cleaner.preprocess_word(a) for a in query_dividida]
-		print('Query dividida')
-		print(query_dividida)    
+		query_dividida = [self.cleaner.preprocess_word(a) for a in query_dividida] 
 		dic_occur_per_term_query = self.get_occurrence_list_per_term(query_dividida)
-		print('Dic_query_per_term_query')
-		print(dic_occur_per_term_query)
 		#utilize o ranking_model para retornar o documentos ordenados considrando dic_query_occur e dic_occur_per_term_query
 		return self.ranking_model.get_ordered_docs(dic_query_occur, dic_occur_per_term_query)
 
@@ -129,34 +123,27 @@ class QueryRunner:
 		#PEça para usuario selecionar entre Booleano ou modelo vetorial para intanciar o QueryRunner
 		#apropriadamente. NO caso do booleano, vc deve pedir ao usuario se será um "and" ou "or" entre os termos.
 		#abaixo, existem exemplos fixos.
-		print('1')
 		qr = QueryRunner(modelo, indice, cleaner)
 		#time_checker.print_delta("Query Creation")
-		print('2')
 		#Utilize o método get_docs_term para obter a lista de documentos que responde esta consulta
-		print('3')        
 		respostas = qr.get_docs_term(query)
-		print('Respostas cheio')
-		print(respostas)
 		#time_checker.print_delta("anwered with {len(respostas)} docs")    
-		print(respostas[0])
-		print('Passei aqui')
+
 		#nesse if, vc irá verificar se o termo possui documentos relevantes associados a ele
 		#se possuir, vc deverá calcular a Precisao e revocação nos top 5, 10, 20, 50.
 		#O for que fiz abaixo é só uma sugestao e o metododo countTopNRelevants podera auxiliar no calculo da revocacao e precisao
-		print(map_relevantes)
-		print(map_relevantes.keys())
 		if(query in map_relevantes.keys()):
 			arr_top = [5,10,20,50]
 			revocacao = 0
 			precisao = 0
-			print('entrou aqui')
 			for n in arr_top:
-				print(map_relevantes[query])
-				revocacao = qr.count_topn_relevant(n, respostas[0], map_relevantes[query]) / len(map_relevantes[query])
-				precisao = qr.count_topn_relevant(n, respostas[0], map_relevantes[query]) / len(respostas[0])
-				print("Precisao @{n}: {precisao}")
-				print("Recall @{n}: {revocacao}")
+				if len(respostas[0]) != 0:
+					precisao = qr.count_topn_relevant(n, list(respostas[0]), set(map_relevantes[query])) / len(respostas[0])
+				revocacao = qr.count_topn_relevant(n, list(respostas[0]), set(map_relevantes[query])) / len(map_relevantes[query])
+				print(f"Precisao @{n}: {precisao}")
+				print(f"Recall @{n}: {revocacao}")
+		else:
+			print('Termo não está presente nos documentos!')
 
 		#imprima aas top 10 respostas
 
