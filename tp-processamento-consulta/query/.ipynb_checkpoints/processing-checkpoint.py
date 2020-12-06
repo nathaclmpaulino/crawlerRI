@@ -116,7 +116,7 @@ class QueryRunner:
 	@staticmethod
 	def runQuery(query:str, indice:Index, indice_pre_computado, map_relevantes, modelo): # removi virgula antes de map_relevantes #: map_relevantes
 		print("ola mundou deu bom")
-		#time_checker = CheckTime()
+		time_checker = CheckTime()
         
 		cleaner = Cleaner(stop_words_file="stopwords.txt",language="portuguese", perform_stop_words_removal=False,perform_accents_removal=False, perform_stemming=False)
         
@@ -124,10 +124,10 @@ class QueryRunner:
 		#apropriadamente. NO caso do booleano, vc deve pedir ao usuario se será um "and" ou "or" entre os termos.
 		#abaixo, existem exemplos fixos.
 		qr = QueryRunner(modelo, indice, cleaner)
-		#time_checker.print_delta("Query Creation")
+		time_checker.print_delta("Query Creation")
 		#Utilize o método get_docs_term para obter a lista de documentos que responde esta consulta
 		respostas = qr.get_docs_term(query)
-		#time_checker.print_delta("anwered with {len(respostas)} docs")    
+		time_checker.print_delta("anwered with {len(respostas)} docs")    
 
 		#nesse if, vc irá verificar se o termo possui documentos relevantes associados a ele
 		#se possuir, vc deverá calcular a Precisao e revocação nos top 5, 10, 20, 50.

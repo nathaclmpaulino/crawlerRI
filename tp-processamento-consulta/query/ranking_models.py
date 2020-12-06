@@ -69,7 +69,6 @@ class IndexPreComputedVals():
         
         # Iterando sobre os termos existêntes
         for term in self.index.dic_index:
-            print(term)
             # ni = doc count with term
             ni = self.index.document_count_with_term(term)
             idf = vectorRank.idf(self.doc_count, ni)
