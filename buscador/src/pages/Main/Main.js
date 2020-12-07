@@ -36,8 +36,17 @@ export default function Main() {
 
         try {
             const response = await api.get('buscador', { params });   
-            console.log(response);
-            alert(`Modelo da busca: ${type} \n Query: ${query} \n Busca realizada com sucesso`);
+            console.log(response.data[5]);
+            
+            alert(
+                `Modelo da busca: ${type} \n` + 
+                `Query: ${query} \n\n` + 
+                `Busca realizada com sucesso: \n` +  
+                `Numero de Documentos: ${response.data['numeroDocumentos']} \n` + 
+                `5: Precisão: ${response.data[5].precisao} \n Revocação: ${response.data[5].revocacao} \n` +
+                `10: Precisão: ${response.data[10].precisao} \n Revocação: ${response.data[10].revocacao} \n` +
+                `25: Precisão: ${response.data[25].precisao} \n Revocação: ${response.data[25].revocacao} \n` +
+                `50: Precisão: ${response.data[50].precisao} \n Revocação: ${response.data[50].revocacao} \n`);
         } catch (err) {
             alert('Falha ao efetuar busca, favor tentar novamente');
         }

@@ -115,7 +115,6 @@ class QueryRunner:
 
 	@staticmethod
 	def runQuery(query:str, indice:Index, indice_pre_computado, map_relevantes, modelo): # removi virgula antes de map_relevantes #: map_relevantes
-		print("ola mundou deu bom")
 		time_checker = CheckTime()
         
 		cleaner = Cleaner(stop_words_file="stopwords.txt",language="portuguese", perform_stop_words_removal=False,perform_accents_removal=False, perform_stemming=False)
@@ -124,27 +123,34 @@ class QueryRunner:
 		#apropriadamente. NO caso do booleano, vc deve pedir ao usuario se será um "and" ou "or" entre os termos.
 		#abaixo, existem exemplos fixos.
 		qr = QueryRunner(modelo, indice, cleaner)
-		time_checker.print_delta("Query Creation")
+		time_checker.printDelta("Query Creation")
 		#Utilize o método get_docs_term para obter a lista de documentos que responde esta consulta
 		respostas = qr.get_docs_term(query)
-		time_checker.print_delta("anwered with {len(respostas)} docs")    
-
+		time_checker.printDelta(f"anwered with {len(respostas[0])} docs")    
+        
 		#nesse if, vc irá verificar se o termo possui documentos relevantes associados a ele
 		#se possuir, vc deverá calcular a Precisao e revocação nos top 5, 10, 20, 50.
 		#O for que fiz abaixo é só uma sugestao e o metododo countTopNRelevants podera auxiliar no calculo da revocacao e precisao
+		retorno = {}
 		if(query in map_relevantes.keys()):
-			arr_top = [5,10,20,50]
+			arr_top = [5,10,25,50]
 			revocacao = 0
 			precisao = 0
+            
+			retorno['numeroDocumentos'] = len(respostas[0])
+            
 			for n in arr_top:
 				if len(respostas[0]) != 0:
 					precisao = qr.count_topn_relevant(n, list(respostas[0]), set(map_relevantes[query])) / len(respostas[0])
 				revocacao = qr.count_topn_relevant(n, list(respostas[0]), set(map_relevantes[query])) / len(map_relevantes[query])
+                
+				retorno[str(n)] = {"precisao": precisao, "revocacao": revocacao}
 				print(f"Precisao @{n}: {precisao}")
 				print(f"Recall @{n}: {revocacao}")
 		else:
 			print('Termo não está presente nos documentos!')
-
+        
+		return retorno
 		#imprima aas top 10 respostas
 
 	@staticmethod
@@ -174,7 +180,7 @@ class QueryRunner:
 
 
 
-		check_time.print_delta("Precomputou valores")
+		check_time.printDelta("Precomputou valores")
 
 		#encontra os docs relevantes
 		map_relevance = None
